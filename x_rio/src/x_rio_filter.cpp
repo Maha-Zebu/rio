@@ -74,7 +74,7 @@ bool XRioFilter::init(const std::vector<ImuDataStamped>& imu_init_vec, const Rad
     T_b_r.translation() = radar_extrinsics_0.at(k).translation();
 
     radar_extrinsics_.emplace_back(T_b_r);
-
+    ROS_INFO("Boolean of calibration: %d", estimate_extrinsics_);
     if (estimate_extrinsics_)
     {
       error_idx_.radar_extrinsics.emplace_back(RadarExtrinsicsIdx(state_offset));

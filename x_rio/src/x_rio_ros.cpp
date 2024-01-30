@@ -408,8 +408,10 @@ void XRioRos::iterateRadarTrigger()
 {
   if (!queue_radar_trigger_.empty())
   {
-    if (!initialized_ || !config_.radar_update)
+    if (!initialized_ || !config_.radar_update || config_.run_without_radar_trigger)
     {
+
+      // ROS_INFO("run_without trigger , queue is empty");
       queue_radar_trigger_.pop();
     }
     else
@@ -453,11 +455,13 @@ void XRioRos::iterateRadarTrigger()
     }
   }
 }
+
 void XRioRos::iterateRadarScan()
 {
   if (!queue_radar_.empty())
   {
-    if (!initialized_ || !config_.radar_update)
+
+    if (!initialized_ || !config_.radar_update )
     {
       queue_radar_.pop();
     }
@@ -467,8 +471,14 @@ void XRioRos::iterateRadarScan()
         ROS_ERROR_STREAM(kStreamingPrefix << "Radar data queue size > number of radars: " << queue_radar_.size()
                                           << " this should not happen!");
 
-      const auto radar_data     = queue_radar_.front();
-      const auto radar_data_msg = radar_data.second;
+      auto radar_data     = queue_radar_.front();
+      auto radar_data_msg = radar_data.second;
+
+
+      // TODO check for future
+      // ti_mmwave_rospkg point clouds have the timestamp 0/0 :( --> workaround: use most recent imu as time
+      if (config_.run_without_radar_trigger || radar_data_msg.header.stamp.toNSec() == 0)
+        radar_data_msg.header.stamp = x_rio_filter_.getTimestamp();
 
       if (radar_frame_ids_.at(radar_data.first).empty())
         radar_frame_ids_.at(radar_data.first) = radar_data_msg.header.frame_id;
@@ -482,6 +492,16 @@ void XRioRos::iterateRadarScan()
         }
         else
         {
+          // workaround for scan only (no trigger) mode --> augment state now
+          // TODO stochastic cloning no needed here ;) (this way, however, the already implemented updates can be used)
+          if (config_.run_without_radar_trigger)
+          {
+            // ROS_INFO("Radar scan without trigger" );
+
+            x_rio_filter_.addRadarStateClone(radar_data.first, radar_data_msg.header.stamp);
+          }
+
+
           FullRadarCloneState radar_clone_state;
           uint clone_state_id;
           if (x_rio_filter_.getFullRadarState(radar_data.first, radar_clone_state, clone_state_id))
@@ -692,8 +712,10 @@ void XRioRos::callbackIMU(const sensor_msgs::ImuConstPtr& imu_msg)
 {
   mutex_.lock();
   Real dt = 2.4e-3;
-  if (std::fabs(last_imu_.dt) > 1.0e-6)
-    dt = (imu_msg->header.stamp - last_imu_.time_stamp).toSec();
+  // ROS_INFO("Current ct: %f, last_imu_dt: %f", (imu_msg->header.stamp - last_imu_.time_stamp).toSec(), last_imu_.dt);
+  if (std::fabs(last_imu_.dt) > 1.0e-6){
+    // ROS_INFO("Current ct: %f, last_imu_dt: %f", (imu_msg->header.stamp - last_imu_.time_stamp).toSec(), last_imu_.dt);
+    dt = (imu_msg->header.stamp - last_imu_.time_stamp).toSec();}
 
   if (dt < 0)
   {
@@ -702,12 +724,14 @@ void XRioRos::callbackIMU(const sensor_msgs::ImuConstPtr& imu_msg)
   else
   {
     if (dt > 50.0e-3)
-    {
-      ROS_ERROR_STREAM(kStreamingPrefix << "Too large IMU dt: " << dt << " limit to 50ms!");
+    // {
+    //   ROS_ERROR_STREAM(kStreamingPrefix << "Too large IMU dt: " << dt << " limit to 50ms!");
+    //   continue
       dt = 50.0e-3;
-    }
-    else
-    {
+
+    // }
+    // else
+    // {
       last_imu_ = ImuDataStamped(imu_msg, dt);
 
       if (config_.sim_mode && config_.generate_imu_noise)
@@ -718,7 +742,7 @@ void XRioRos::callbackIMU(const sensor_msgs::ImuConstPtr& imu_msg)
       }
 
       queue_imu_.push(last_imu_);
-    }
+    // }
   }
   mutex_.unlock();
 }

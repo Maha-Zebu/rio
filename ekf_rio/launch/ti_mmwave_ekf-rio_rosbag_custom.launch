@@ -7,13 +7,16 @@
     <param name="use_sim_time" value="False" type="bool"/>
     <arg name="enable_rviz" default="True"/>
 
+    <arg name="type" default="ros_node"/>
+
+
     <arg name="dataset_dir" default="$(find ekf_rio)../demo_datasets/ekf_rio/"/>
     <arg name="rosbag" default="ti_mmwave_rospkg_demo.bag"/>
 
-    <arg name="config" default="ekf_rio_default"/>
-    <arg name="calibration" default="$(find ekf_rio)../demo_datasets/ekf_rio/calib_ti_mmwave_rospkg_dataset"/>
+    <arg name="config" default="ekf_rio_custom"/>
+    <arg name="calibration" default="$(find ekf_rio)../demo_datasets/ekf_rio/calib_ti_mmwave_rospkg_dataset_custom"/>
 
-    <arg name="run_without_radar_trigger" default="False"/>
+    <arg name="run_without_radar_trigger" default="True"/>
 
     <arg name="bag_start" default="0"/>
     <arg name="bag_duration" default="-1.0"/>
@@ -21,13 +24,17 @@
 
     <arg name="log_level" default="Info"/>
 
-    <node name="$(arg filter_node_name)" pkg="ekf_rio" type="ros_node" output="screen" launch-prefix="bash -c 'sleep 2; $0 $@' ">
+    <node name="$(arg filter_node_name)" pkg="ekf_rio" type="$(arg type)" output="screen" launch-prefix="bash -c 'sleep 2; $0 $@' ">
         <rosparam file="$(find ekf_rio)/config/$(arg config).yaml" command="load" ns=""/>
         <rosparam file="$(arg calibration).yaml" command="load" ns=""/>
-        <param name="rosbag_path" value="$(arg dataset_dir)/$(arg rosbag)" type="string"/>
+        <param name="rosbag_path" value="/home/zebu/radar_rosbag/mono_radar_imu_vel.bag" type="string"/>
         <param name="bag_start" value="$(arg bag_start)" type="double"/>
         <param name="bag_duration" value="$(arg bag_duration)" type="double"/>
-        <param name="b_0_w_z_deg" value="-0.05" type="double"/>
+        <!-- <param name="b_0_w_z_deg" value="-0.16" type="double"/>
+        <param name="b_0_w_y_deg" value="0.007" type="double"/>
+        <param name="b_0_w_x_deg" value="0.005880" type="double"/>
+        <param name="sigma_b_w_deg" value="0.1" type="double"/> -->
+
         <param name="run_without_radar_trigger" value="$(arg run_without_radar_trigger)" type="bool"/>
     </node>
 

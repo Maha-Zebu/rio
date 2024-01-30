@@ -21,7 +21,7 @@
 
     <arg name="log_level" default="Info"/>
 
-    <node name="$(arg filter_node_name)" pkg="ekf_rio" type="rosbag_node" output="screen" launch-prefix="bash -c 'sleep 2; $0 $@' ">
+    <!-- <node name="$(arg filter_node_name)" pkg="ekf_rio" type="rosbag_node" output="screen" launch-prefix="bash -c 'sleep 2; $0 $@' ">
         <rosparam file="$(find ekf_rio)/config/$(arg config).yaml" command="load" ns=""/>
         <rosparam file="$(arg calibration).yaml" command="load" ns=""/>
         <param name="rosbag_path" value="$(arg dataset_dir)/$(arg rosbag)" type="string"/>
@@ -31,15 +31,24 @@
         <param name="republish_ground_truth" value="true" type="bool"/>
         <param name="run_without_radar_trigger" value="$(arg run_without_radar_trigger)" type="bool"/>
 
+    </node> -->
+
+
+    <node name="$(arg filter_node_name)" pkg="ekf_rio" type="ros_node" output="screen">
+        <rosparam file="$(find ekf_rio)/config/$(arg config).yaml" command="load" ns=""/>
+        <rosparam file="$(arg calibration).yaml" command="load" ns=""/>
+        <param name="b_0_w_z_deg" value="-0.05" type="double"/>
+        <param name="republish_ground_truth" value="false" type="bool"/>
     </node>
 
-    <node name="evaluator" pkg="ekf_rio" type="pose_velocity_evaluator.py" output="screen">
+
+    <!-- <node name="evaluator" pkg="ekf_rio" type="pose_velocity_evaluator.py" output="screen">
         <rosparam file="$(arg calibration).yaml" command="load" ns=""/>
         <param name="topic_pose" value="$(arg filter_node_name)/pose" type="string"/>
         <param name="topic_twist" value="$(arg filter_node_name)/twist" type="string"/>
         <param name="filter_name" value="ekf_rio" type="string"/>
         <param name="do_plot" value="$(arg do_plot)" type="bool"/>
-    </node>
+    </node> -->
 
     <node pkg="rosservice" type="rosservice" name="set_$(arg filter_node_name)_log_level"
           args="call --wait /$(arg filter_node_name)/set_logger_level 'ros.$(arg filter_node_name)' '$(arg log_level)'"/>

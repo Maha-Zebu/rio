@@ -27,6 +27,9 @@ target_link_libraries(ros_node ${PROJECT_NAME})
 cs_add_executable(rosbag_node src/nodes/rosbag_node.cpp )
 target_link_libraries(rosbag_node ${PROJECT_NAME})
 
+cs_add_executable(data_synchronizer src/custom/data_synchronizer.cpp )
+target_link_libraries(data_synchronizer ${PROJECT_NAME})
+
 
 cs_install()
 

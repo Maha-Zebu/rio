@@ -9,6 +9,9 @@ def configure(gen):
     general = gen.add_group("Filter Mode")
     general.add("frame_id", str_t, 0, "Frame of estimated pose", "odom")
     general.add("estimate_extrinsics", bool_t, 0, "Enable online calibration of the extrinsic radar transform", True)
+    general.add("run_without_radar_trigger", bool_t, 0, "Run ekf_rio w/o trigger message (radar scan header stamp is used only, might yield worse results)", False)
+
+
 
     # subscribers
     subscribers = gen.add_group("Subscribers")
@@ -35,6 +38,8 @@ def configure(gen):
     kf_update.add("altimeter_update", bool_t, 0, "enable altimeter update", False)
     kf_update.add("radar_update", bool_t, 0, "Enable radar update", False)
     kf_update.add("sigma_altimeter", double_t, 0, "Sigma of altimeter measurement", 1.0, 0, 10)
+
+
 
     # radar model
     radar = gen.add_group("Radar Measurement Model")

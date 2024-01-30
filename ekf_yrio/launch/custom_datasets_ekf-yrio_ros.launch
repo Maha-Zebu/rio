@@ -6,17 +6,19 @@
     <param name="use_sim_time" value="False" type="bool"/>
     <arg name="enable_rviz" default="True"/>
 
-    <arg name="config" default="ekf_yrio_default"/>
-    <arg name="calibration" default="$(find ekf_yrio)../demo_datasets/ekf_yrio/calib_radar_inertial_datasets_icins_2021_carried"/>
+    <arg name="config" default="ekf_yrio_custom"/>
+    <arg name="calibration" default="$(find ekf_yrio)../demo_datasets/ekf_yrio/calib_radar_inertial_custom"/>
 
     <arg name="filter_node_name" default="ekf_yrio"/>
     <arg name="log_level" default="Info"/>
+
+    <arg name="run_without_radar_trigger" default="True"/>
+
 
     <node name="$(arg filter_node_name)" pkg="ekf_yrio" type="ros_node" output="screen">
         <rosparam file="$(find ekf_yrio)/config/$(arg config).yaml" command="load" ns=""/>
         <rosparam file="$(arg calibration).yaml" command="load" ns=""/>
         <param name="republish_ground_truth" value="false" type="bool"/>
-
         <param name="run_without_radar_trigger" value="$(arg run_without_radar_trigger)" type="bool"/>
 
     </node>

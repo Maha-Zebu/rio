@@ -55,6 +55,8 @@ bool rio::pcl2msgToPcl(const sensor_msgs::PointCloud2& pcl_msg, pcl::PointCloud<
       fields.find("snr_db") != fields.end() && fields.find("noise_db") != fields.end() &&
       fields.find("v_doppler_mps") != fields.end())
   {
+    ROS_INFO_ONCE("[pcl2msgToPcl]: Detected rio pcl format!(RIO Utils)");
+
     pcl::PCLPointCloud2 pcl_pc2;
     pcl_conversions::toPCL(pcl_msg, pcl_pc2);
     pcl::fromPCLPointCloud2(pcl_pc2, scan);
@@ -63,6 +65,9 @@ bool rio::pcl2msgToPcl(const sensor_msgs::PointCloud2& pcl_msg, pcl::PointCloud<
   else if (fields.find("x") != fields.end() && fields.find("y") != fields.end() && fields.find("z") != fields.end() &&
            fields.find("intensity") != fields.end() && fields.find("velocity") != fields.end())
   {
+
+    ROS_INFO_ONCE("[pcl2msgToPcl]: Detected ti_mmwave_rospkg pcl format! (RIO Utils)");
+
     pcl::PointCloud<mmWaveCloudType> scan_mmwave;
     pcl::PCLPointCloud2 pcl_pc2;
     pcl_conversions::toPCL(pcl_msg, pcl_pc2);
@@ -81,6 +86,7 @@ bool rio::pcl2msgToPcl(const sensor_msgs::PointCloud2& pcl_msg, pcl::PointCloud<
       p_.noise_db      = -1.;
       scan.push_back(p_);
     }
+
     return true;
   }
   else
