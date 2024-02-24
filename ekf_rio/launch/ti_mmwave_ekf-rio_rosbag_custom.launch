@@ -27,7 +27,7 @@
     <node name="$(arg filter_node_name)" pkg="ekf_rio" type="$(arg type)" output="screen" launch-prefix="bash -c 'sleep 2; $0 $@' ">
         <rosparam file="$(find ekf_rio)/config/$(arg config).yaml" command="load" ns=""/>
         <rosparam file="$(arg calibration).yaml" command="load" ns=""/>
-        <param name="rosbag_path" value="/home/zebu/radar_rosbag/mono_radar_imu_vel.bag" type="string"/>
+        <param name="rosbag_path" value="/home/zebu/radar_rosbag/rio_rosbag_1_radar_2.cfg.bag" type="string"/>
         <param name="bag_start" value="$(arg bag_start)" type="double"/>
         <param name="bag_duration" value="$(arg bag_duration)" type="double"/>
         <!-- <param name="b_0_w_z_deg" value="-0.16" type="double"/>

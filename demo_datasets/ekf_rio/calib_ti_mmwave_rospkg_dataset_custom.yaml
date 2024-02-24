@@ -32,4 +32,4 @@ q_b_r_w: 0.7071068
 radar_frame_ms: 18.5
 
 # nominal radar rate
-radar_rate: 30
+radar_rate: 10

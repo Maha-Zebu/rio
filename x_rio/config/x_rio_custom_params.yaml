@@ -41,7 +41,7 @@ estimated_extrinsics_error_att: False
 # Radar Ego Velocity Estimation
 min_dist: 1.0
 max_dist: 20
-min_db: 3
+min_db: 5
 elevation_thresh_deg: 45
 filter_min_z: -1 # in -2 2 out
 filter_max_z: 1
@@ -194,7 +194,7 @@ sigma_eul_b_r_yaw_deg: 0.25
 
 
 # Noise PSDs
-noise_psd_a: 0.00001
+noise_psd_a: 0.001
 noise_psd_w_deg: 0.4
 noise_psd_b_a: 0.00001
 noise_psd_b_w_deg: 0.00001 # low value means lesser noise in the bias of gyroscope

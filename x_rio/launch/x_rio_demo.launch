@@ -38,6 +38,8 @@
         <param name="altimeter_update" value="$(arg altimeter_update)" type="bool"/>
         <param name="estimate_extrinsics" value="$(arg estimate_extrinsics)" type="bool"/>
         <param name="n_radar" value="$(arg n_radar)" type="int"/>
+        <param name="run_without_radar_trigger" value="False" type="bool"/>
+
     </node>
 
     <node pkg="rosservice" type="rosservice" name="set_$(arg filter_node_name)_log_level"
