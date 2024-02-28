@@ -3,6 +3,23 @@ Navigation in GNSS denied and visually degraded environments is still very chall
 Approaches based on visual sensors tend to fail in conditions such as darkness, direct sunlight, fog or smoke.
 Therefore, we are using 4D mmWave FMCW radar sensors and inertial sensor data as these are not affected by such conditions.
 
+## Run the custom demo without radar trigger signal using only 1 radar and Imu: 
+**Note:** Currently only ekf_rio package supports non-triggred radar signal, some modifications in y_rio and x_rio are needed to get a workaround
+
+~~~[shell]
+roslaunch ekf_rio ti_mmwave_ekf-rio_rosbag_custom.launch enable_rviz:=True type:=ros_node do_plot:=false run_without_radar_trigger:=True
+~~~
+Two main config files used are in:
+
+- `ekf_rio/config/ekf_rio_custom.yaml` : for filter-related params
+- `demo_datasets/ekf_rio/calib_ti_mmwave_rospkg_dataset_custom.yaml` : for extrinsics/transforms and topic name
+
+Check odometry data on 
+~~~[shell]
+rostopic echo /ekf_rio/pose_path
+~~~
+
+
 ***Highlights:***
 - Robust and accurate navigation even in Degraded Visual and GNSS denied Environments
 - Super fast: [x_rio](./x_rio) achieves runtimes ~125x faster than realtime on an [Intel NUC i7](https://www.intel.com/content/www/us/en/products/sku/130392/intel-nuc-kit-nuc7i7dnke/specifications.html) and ~21x on an [Up Core](https://up-shop.org/up-core-series.html) embedded computer
