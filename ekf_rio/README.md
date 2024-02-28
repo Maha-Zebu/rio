@@ -124,15 +124,18 @@ Run the demo without radar trigger signal:
 roslaunch ekf_rio ti_mmwave_ekf-rio_rosbag.launch run_without_radar_trigger:=True
 ~~~
 
-# Run the custom demo without radar trigger signal using only 1 radar: 
+# Run the custom demo without radar trigger signal using only 1 radar and Imu: 
 **Note:** Currently only ekf_rio package supports non-triggred radar signal, some modifications in y_rio and x_rio are needed to get a workaround
 
 ~~~[shell]
 roslaunch ekf_rio ti_mmwave_ekf-rio_rosbag_custom.launch enable_rviz:=True type:=ros_node do_plot:=false run_without_radar_trigger:=True
 ~~~
-two main config files used are in `ekf_rio/config/ekf_rio_custom.yaml` and  `demo_datasets/ekf_rio/`
+Two main config files used are in:
 
-check odometry data on 
+- `ekf_rio/config/ekf_rio_custom.yaml` : for filter-related params
+- `demo_datasets/ekf_rio/calib_ti_mmwave_rospkg_dataset_custom.yaml` : for extrinsics/transforms and topic name
+
+Check odometry data on 
 ~~~[shell]
 rostopic echo /ekf_rio/pose_path
 ~~~
